@@ -40,7 +40,7 @@ def generate_altair_pdf(df):
 
 def generate_altair_sample_hist(sample):
     base = alt.Chart(sample)
-    max_bins = st.slider("Max histogram bins", 5, 40, 20)
+    max_bins = st.slider("Max histogram bins", 5, 40, 40)
     sample_hist = base.mark_bar().encode(
         x=alt.X('vals:Q', bin={"maxbins": max_bins}),
         y='count()'
@@ -59,7 +59,7 @@ def main():
     st.sidebar.subheader("Distribution")
     distribution = st.sidebar.selectbox("Select distribution", ("Gaussian", "Beta"))
 
-    sample_size = st.sidebar.slider("Select sample size", 1, 1000, 100) # can also be an enter-a-number srt of deal
+    sample_size = st.sidebar.slider("Select sample size", 1, 10000, 1000) # can also be an enter-a-number srt of deal
 
     st.sidebar.subheader("Parameters")
     if distribution == "Gaussian":
@@ -85,8 +85,8 @@ def main():
 
     elif distribution == "Beta":
         # Beta parameters
-        a = st.slider("\u03B1", 0.01, 10.00)
-        b = st.slider("\u03B2", 0.01, 10.00)
+        a = st.sidebar.slider("\u03B1", 0.01, 10.0, 2.0)
+        b = st.sidebar.slider("\u03B2", 0.01, 10.0, 5.0)
 
         # PDF
         x = np.linspace(beta.ppf(0.0001, a, b), beta.ppf(0.9999, a, b), 100)
@@ -96,6 +96,13 @@ def main():
         # Display in app
         st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({a}, {b})")
         st.altair_chart(beta_pdf_chart, use_container_width=True)
+
+        # Random sample
+        sample = pd.DataFrame(beta.rvs(a, b, size=sample_size), columns=['vals'])
+        # Sample histogram
+        sample_hist = generate_altair_sample_hist(sample)
+        # Display in app
+        st.altair_chart(sample_hist, use_container_width=True)
 
 
 st.sidebar.title("Random Samples")
