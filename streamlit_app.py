@@ -1,7 +1,7 @@
 import altair as alt
 import numpy as np
 import pandas as pd
-from scipy.stats import norm
+from scipy.stats import norm, beta
 import streamlit as st
 
 
@@ -73,9 +73,45 @@ def main():
         # st.altair_chart(combined, use_container_width=True)
 
     elif distribution == "Beta":
-        alpha = st.slider("\u03B1", 0.01, 100.00)
-        beta = st.slider("\u03B2", 0.01, 100.00)
-        # params = (alpha, beta)
+        a = st.slider("\u03B1", 0.01, 10.00)
+        b = st.slider("\u03B2", 0.01, 10.00)
+
+        # Base
+        x = np.linspace(beta.ppf(0.0001, a, b), beta.ppf(0.9999, a, b), 100)
+        df = pd.DataFrame({'x': x, 'f(x)': beta.pdf(x, a, b)})
+
+        # Normal pdf line chart
+        beta_pdf_line = alt.Chart(df).mark_line().encode(
+            x='x',
+            y='f(x)'
+        )
+        nearest = alt.selection(
+            type='single', nearest=True, on='mouseover', 
+            fields=['x'], empty='none'
+        )
+        selectors = alt.Chart(df).mark_point().encode(
+            x='x:Q',
+            opacity=alt.value(0),
+        ).add_selection(
+            nearest
+        )
+        points = beta_pdf_line.mark_point().encode(
+            opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+        )
+        text = beta_pdf_line.mark_text(align='left', dx=5, dy=-5, color='white').encode(
+            text=alt.condition(nearest, 'f(x):Q', alt.value(' '))
+        )
+        rules = alt.Chart(df).mark_rule(color='gray').encode(
+            x='x:Q',
+        ).transform_filter(
+            nearest
+        )
+        beta_pdf_chart = alt.layer(
+            beta_pdf_line, selectors, points, rules, text
+        )
+        st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({a}, {b})")
+        st.altair_chart(beta_pdf_chart, use_container_width=True)
+
 
 st.sidebar.title("Random Samples")
 st.sidebar.write("1. Pick a distribution")
