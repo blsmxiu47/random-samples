@@ -6,15 +6,15 @@ import streamlit as st
 
 
 def main():
-    st.subheader("Distribution")
-    distribution = st.selectbox("Select distribution", ("Gaussian", "Beta"))
+    st.sidebar.subheader("Distribution")
+    distribution = st.sidebar.selectbox("Select distribution", ("Gaussian", "Beta"))
 
-    sample_size = st.slider("Select sample size", 1, 1000, 100) # can also be an enter-a-number srt of deal
+    sample_size = st.sidebar.slider("Select sample size", 1, 1000, 100) # can also be an enter-a-number srt of deal
 
-    st.subheader("Parameters")
+    st.sidebar.subheader("Parameters")
     if distribution == "Gaussian":
-        mu = st.slider("\u03BC (Mean)", -10, 10, 0)
-        sigma_squared = st.slider("\u03C3\u00B2 (Variance)", 0.01, 10.0, 1.0)
+        mu = st.sidebar.slider("\u03BC (Mean)", -10, 10, 0)
+        sigma_squared = st.sidebar.slider("\u03C3\u00B2 (Variance)", 0.01, 10.0, 1.0)
 
         # Base
         x = np.linspace(norm.ppf(0.0001, mu, sigma_squared), norm.ppf(0.9999, mu, sigma_squared), 100)
@@ -60,6 +60,12 @@ def main():
         sample_hist = base.mark_bar().encode(
             x=alt.X('vals:Q', bin={"maxbins": max_bins}),
             y='count()'
+        ).properties(
+            title=f'Random Sample (n = {sample_size})'
+        )
+        sample_hist = sample_hist.configure_title(
+            fontSize=20,
+            font='Courier New'
         )
         st.altair_chart(sample_hist, use_container_width=True)
 
@@ -71,8 +77,7 @@ def main():
         beta = st.slider("\u03B2", 0.01, 100.00)
         # params = (alpha, beta)
 
-st.title("Random Samples")
-"1. Pick a distribution"
-"2. Select parameters and sample size"
-"3. Run simulation"
+st.sidebar.title("Random Samples")
+st.sidebar.write("1. Pick a distribution")
+st.sidebar.write("2. Select sample size and parameters")
 main()
