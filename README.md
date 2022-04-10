@@ -1,6 +1,8 @@
 # Random Samples
 A Streamlit app. Explore common probability distributions and generate random samples from said distributions.
 
+<img src="https://raw.githubusercontent.com/blsmxiu47/random-samples/main/images/app-screenshot.png" alt="random samples app screenshot" width="300"/>
+
 ## Proposal
 Demonstrate Streamlit functionality and ease-of-use with simulations of random sampling from a few (or several?, tbd) probability distributions. The user can select parameters and see the sample distribution update in real time along with statistics such as sample mean, stdev, etc.
 
