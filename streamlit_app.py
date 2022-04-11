@@ -1,7 +1,8 @@
+from re import L
 import altair as alt
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, beta
+from scipy.stats import norm, beta, expon
 import streamlit as st
 
 
@@ -57,7 +58,7 @@ def generate_altair_sample_hist(sample):
 
 def main():
     st.sidebar.subheader("Distribution")
-    distribution = st.sidebar.selectbox("Select distribution", ("Gaussian", "Beta"))
+    distribution = st.sidebar.selectbox("Select distribution", ("Gaussian", "Beta", "Exponential"))
 
     sample_size = st.sidebar.slider("Select sample size", 1, 10000, 1000) # can also be an enter-a-number srt of deal
 
@@ -99,6 +100,26 @@ def main():
 
         # Random sample
         sample = pd.DataFrame(beta.rvs(a, b, size=sample_size), columns=['vals'])
+        # Sample histogram
+        sample_hist = generate_altair_sample_hist(sample)
+        # Display in app
+        st.altair_chart(sample_hist, use_container_width=True)
+
+    elif distribution == "Exponential":
+        # Beta parameters
+        l = st.sidebar.slider("\u03BB", 0.01, 10.0, 1.0)
+
+        # PDF
+        x = np.linspace(expon.ppf(0.0001, scale=1/l), expon.ppf(0.9999, scale=1/l), 100)
+        df = pd.DataFrame({'x': x, 'f(x)': expon.pdf(x, scale=1/l)})
+        # Beta pdf line chart
+        expon_pdf_chart = generate_altair_pdf(df)
+        # Display in app
+        st.latex("PDF\\ of\\ Exp"+f"({l})")
+        st.altair_chart(expon_pdf_chart, use_container_width=True)
+
+        # Random sample
+        sample = pd.DataFrame(expon.rvs(scale=1/l, size=sample_size), columns=['vals'])
         # Sample histogram
         sample_hist = generate_altair_sample_hist(sample)
         # Display in app
