@@ -65,8 +65,15 @@ def main():
     st.sidebar.subheader("Parameters")
     if distribution == "Gaussian":
         # Gaussian parameters
-        mu = st.sidebar.slider("\u03BC (Mean)", -10, 10, 0)
-        sigma_squared = st.sidebar.slider("\u03C3\u00B2 (Variance)", 0.01, 10.0, 1.0)
+        input_type = st.sidebar.radio(
+            "Input Type",
+            ('Sliders', 'Enter Values'))
+        if input_type == 'Sliders':
+            mu = st.sidebar.slider("\u03BC (Mean)", -10.0, 10.0, 0.0)
+            sigma_squared = st.sidebar.slider("\u03C3\u00B2 (Variance)", 0.01, 10.0, 1.0)
+        elif input_type == 'Enter Values':
+            mu = st.sidebar.number_input("\u03BC (Mean)", value=0.0, step=1.0)
+            sigma_squared = st.sidebar.number_input("\u03C3\u00B2 (Variance)", min_value=0.01, value=1.0, step=0.1)
 
         # PDF
         x = np.linspace(norm.ppf(0.0001, mu, sigma_squared), norm.ppf(0.9999, mu, sigma_squared), 100)
@@ -74,7 +81,7 @@ def main():
         # Normal pdf line chart
         norm_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ \mathcal{N}"+f"({mu}, {sigma_squared})")
+        st.latex("PDF\\ of\\ \mathcal{N}"+f"({np.round(mu, 2)}, {np.round(sigma_squared, 2)})")
         st.altair_chart(norm_pdf_chart, use_container_width=True)
         
         # Random sample
