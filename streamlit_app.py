@@ -6,6 +6,8 @@ import streamlit as st
 
 
 def generate_altair_pdf(df):
+    """Builds and returns an pdf (probability density function) Altair line chart from a Pandas DataFrame
+     containing some array x and the array of values corresponding to the value of a given pdf, f(x), at each x"""
     pdf_line = (
         alt.Chart(df)
         .mark_line()
@@ -85,6 +87,7 @@ def generate_altair_pdf(df):
 
 
 def generate_altair_sample_hist(sample):
+    """Builds and returns and Altair histogram chart from a Pandas DataFrame"""
     base = alt.Chart(sample)
 
     max_bins = st.slider("Max histogram bins", 5, 40, 40)
@@ -116,12 +119,14 @@ def generate_altair_sample_hist(sample):
 
 
 def main():
+    # Distribution Selection
     st.sidebar.subheader("Distribution")
     distribution = st.sidebar.selectbox(
         label="Select distribution", 
         options=("Gaussian", "Beta", "Exponential")
     )
 
+    # Sample Size Selection
     sample_size = st.sidebar.slider(
         label="Select sample size", 
         min_value=1, 
@@ -162,7 +167,7 @@ def main():
                 step=0.1
             )
 
-        # PDF
+        # Gaussian PDF
         x = np.linspace(
             norm.ppf(0.0001, mu, sigma_squared), 
             norm.ppf(0.9999, mu, sigma_squared),
@@ -172,7 +177,7 @@ def main():
             'x': x, 
             'f(x)': norm.pdf(x, mu, sigma_squared)
         })
-        # Normal pdf line chart
+        # Gaussian PDF line chart
         norm_pdf_chart = generate_altair_pdf(df)
         # Display in app
         st.latex("PDF\\ of\\ \mathcal{N}"+f"({np.round(mu, 2)}, {np.round(sigma_squared, 2)})")
@@ -209,7 +214,7 @@ def main():
             value=5.0
         )
 
-        # PDF
+        # Beta PDF
         x = np.linspace(
             beta.ppf(0.0001, a, b), 
             beta.ppf(0.9999, a, b), 
@@ -219,7 +224,7 @@ def main():
             'x': x, 
             'f(x)': beta.pdf(x, a, b)
         })
-        # Beta pdf line chart
+        # Beta PDF line chart
         beta_pdf_chart = generate_altair_pdf(df)
         # Display in app
         st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({a}, {b})")
@@ -242,7 +247,7 @@ def main():
         )
 
     elif distribution == "Exponential":
-        # Beta parameters
+        # Exponential parameters
         l = st.sidebar.slider(
             label="\u03BB", 
             min_value=0.01, 
@@ -250,7 +255,7 @@ def main():
             value=1.0
         )
 
-        # PDF
+        # Exponential PDF
         x = np.linspace(
             expon.ppf(0.0001, scale=1/l), 
             expon.ppf(0.9999, scale=1/l), 
@@ -260,7 +265,7 @@ def main():
             'x': x, 
             'f(x)': expon.pdf(x, scale=1/l)
         })
-        # Beta pdf line chart
+        # Exponential PDF line chart
         expon_pdf_chart = generate_altair_pdf(df)
         # Display in app
         st.latex("PDF\\ of\\ Exp"+f"({l})")
