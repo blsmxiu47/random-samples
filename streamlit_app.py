@@ -90,7 +90,7 @@ def generate_altair_sample_hist(sample):
     """Builds and returns and Altair histogram chart from a Pandas DataFrame"""
     base = alt.Chart(sample)
 
-    max_bins = st.slider("Max histogram bins", 5, 40, 40)
+    max_bins = st.slider('Max histogram bins', 5, 40, 40)
 
     sample_hist = (
         base
@@ -122,46 +122,46 @@ def main():
     # Distribution Selection
     st.sidebar.subheader("Distribution")
     distribution = st.sidebar.selectbox(
-        label="Select distribution", 
-        options=("Gaussian", "Beta", "Exponential")
+        label='Select distribution', 
+        options=('Gaussian', 'Beta', 'Exponential')
     )
 
     # Sample Size Selection
     sample_size = st.sidebar.slider(
-        label="Select sample size", 
+        label='Select sample size', 
         min_value=1, 
         max_value=10000, 
         value=1000
     ) # can also be an enter-a-number srt of deal
  
-    st.sidebar.subheader("Parameters")
+    st.sidebar.subheader('Parameters')
     if distribution == "Gaussian":
         # Gaussian parameters
         input_type = st.sidebar.radio(
-            "Input Type",
+            'Input Type',
             ('Sliders', 'Enter Values')
         )
         if input_type == 'Sliders':
             mu = st.sidebar.slider(
-                label="\u03BC (Mean)", 
+                label='\u03BC (Mean)', 
                 min_value=-10.0, 
                 max_value=10.0, 
                 value=0.0
             )
             sigma_squared = st.sidebar.slider(
-                label="\u03C3\u00B2 (Variance)", 
+                label='\u03C3\u00B2 (Variance)', 
                 min_value=0.01, 
                 max_value=10.0, 
                 value=1.0
             )
         elif input_type == 'Enter Values':
             mu = st.sidebar.number_input(
-                label="\u03BC (Mean)", 
+                label='\u03BC (Mean)', 
                 value=0.0, 
                 step=1.0
             )
             sigma_squared = st.sidebar.number_input(
-                label="\u03C3\u00B2 (Variance)", 
+                label='\u03C3\u00B2 (Variance)', 
                 min_value=0.01, 
                 value=1.0, 
                 step=0.1
@@ -180,7 +180,7 @@ def main():
         # Gaussian PDF line chart
         norm_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ \mathcal{N}"+f"({np.round(mu, 2)}, {np.round(sigma_squared, 2)})")
+        st.latex('PDF\\ of\\ \mathcal{N}'+f'({np.round(mu, 2)}, {np.round(sigma_squared, 2)})')
         st.altair_chart(
             norm_pdf_chart, 
             use_container_width=True
@@ -202,31 +202,31 @@ def main():
     elif distribution == "Beta":
         # Beta parameters
         input_type = st.sidebar.radio(
-            "Input Type",
+            'Input Type',
             ('Sliders', 'Enter Values')
         )
         if input_type == 'Sliders':
             a = st.sidebar.slider(
-                label="\u03B1", 
+                label='\u03B1', 
                 min_value=0.01, 
                 max_value=10.0, 
                 value=2.0
             )
             b = st.sidebar.slider(
-                label="\u03B2", 
+                label='\u03B2', 
                 min_value=0.01, 
                 max_value=10.0, 
                 value=5.0
             )
         elif input_type == 'Enter Values':
             a = st.sidebar.number_input(
-                label="\u03B1", 
+                label='\u03B1', 
                 min_value=0.01, 
                 value=2.0,
                 step=0.1
             )
             b = st.sidebar.number_input(
-                label="\u03B2", 
+                label='\u03B2', 
                 min_value=0.01, 
                 value=5.0,
                 step=0.1
@@ -258,7 +258,7 @@ def main():
         # Beta PDF line chart
         beta_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({np.round(a, 2)}, {np.round(b, 2)})")
+        st.latex('PDF\\ of\\ \mathcal{Beta}'+f'({np.round(a, 2)}, {np.round(b, 2)})')
         st.altair_chart(
             beta_pdf_chart, 
             use_container_width=True
@@ -280,19 +280,19 @@ def main():
     elif distribution == "Exponential":
         # Exponential parameters
         input_type = st.sidebar.radio(
-            "Input Type",
+            'Input Type',
             ('Sliders', 'Enter Values')
         )
         if input_type == 'Sliders':
             l = st.sidebar.slider(
-                label="\u03BB", 
+                label='\u03BB', 
                 min_value=0.01, 
                 max_value=10.0, 
                 value=1.0
             )
         elif input_type == 'Enter Values':
             l = st.sidebar.number_input(
-                label="\u03BB", 
+                label='\u03BB', 
                 min_value=0.01, 
                 value=1.0,
                 step=0.1
@@ -312,7 +312,7 @@ def main():
         # Exponential PDF line chart
         expon_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ Exp"+f"({np.round(l, 2)})")
+        st.latex('PDF\\ of\\ Exp'+f'({np.round(l, 2)})')
         st.altair_chart(
             expon_pdf_chart, 
             use_container_width=True
@@ -332,7 +332,7 @@ def main():
         )
 
 
-st.sidebar.title("Random Samples")
-st.sidebar.write("1. Pick a distribution")
-st.sidebar.write("2. Select sample size and parameters")
+st.sidebar.title('Random Samples')
+st.sidebar.write('1. Pick a distribution')
+st.sidebar.write('2. Select sample size and parameters')
 main()
