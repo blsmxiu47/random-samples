@@ -169,9 +169,9 @@ def main():
 
         # Gaussian PDF
         x = np.linspace(
-            norm.ppf(0.0001, mu, sigma_squared), 
-            norm.ppf(0.9999, mu, sigma_squared),
-            100
+            norm.ppf(0.001, mu, sigma_squared), 
+            norm.ppf(0.999, mu, sigma_squared),
+            1000
         )
         df = pd.DataFrame({
             'x': x, 
@@ -234,9 +234,9 @@ def main():
 
         # Beta PDF
         x = np.linspace(
-            beta.ppf(0.0001, a, b), 
-            beta.ppf(0.9999, a, b), 
-            100
+            beta.ppf(0.001, a, b), 
+            beta.ppf(0.999, a, b), 
+            1000
         )
         df = pd.DataFrame({
             'x': x, 
@@ -288,9 +288,9 @@ def main():
 
         # Exponential PDF
         x = np.linspace(
-            expon.ppf(0.0001, scale=1/l), 
-            expon.ppf(0.9999, scale=1/l), 
-            100
+            expon.ppf(0.001, scale=1/l), 
+            expon.ppf(0.999, scale=1/l), 
+            1000
         )
         df = pd.DataFrame({
             'x': x, 
