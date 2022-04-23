@@ -201,18 +201,36 @@ def main():
 
     elif distribution == "Beta":
         # Beta parameters
-        a = st.sidebar.slider(
-            label="\u03B1", 
-            min_value=0.01, 
-            max_value=10.0, 
-            value=2.0
+        input_type = st.sidebar.radio(
+            "Input Type",
+            ('Sliders', 'Enter Values')
         )
-        b = st.sidebar.slider(
-            label="\u03B2", 
-            min_value=0.01, 
-            max_value=10.0, 
-            value=5.0
-        )
+        if input_type == 'Sliders':
+            a = st.sidebar.slider(
+                label="\u03B1", 
+                min_value=0.01, 
+                max_value=10.0, 
+                value=2.0
+            )
+            b = st.sidebar.slider(
+                label="\u03B2", 
+                min_value=0.01, 
+                max_value=10.0, 
+                value=5.0
+            )
+        elif input_type == 'Enter Values':
+            a = st.sidebar.number_input(
+                label="\u03B1", 
+                min_value=0.01, 
+                value=2.0,
+                step=0.1
+            )
+            b = st.sidebar.number_input(
+                label="\u03B2", 
+                min_value=0.01, 
+                value=5.0,
+                step=0.1
+            )
 
         # Beta PDF
         x = np.linspace(
@@ -227,7 +245,7 @@ def main():
         # Beta PDF line chart
         beta_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({a}, {b})")
+        st.latex("PDF\\ of\\ \mathcal{Beta}"+f"({np.round(a, 2)}, {np.round(b, 2)})")
         st.altair_chart(
             beta_pdf_chart, 
             use_container_width=True
@@ -248,12 +266,25 @@ def main():
 
     elif distribution == "Exponential":
         # Exponential parameters
-        l = st.sidebar.slider(
-            label="\u03BB", 
-            min_value=0.01, 
-            max_value=10.0, 
-            value=1.0
+        input_type = st.sidebar.radio(
+            "Input Type",
+            ('Sliders', 'Enter Values')
         )
+        if input_type == 'Sliders':
+            l = st.sidebar.slider(
+                label="\u03BB", 
+                min_value=0.01, 
+                max_value=10.0, 
+                value=1.0
+            )
+        elif input_type == 'Enter Values':
+            l = st.sidebar.number_input(
+                label="\u03BB", 
+                min_value=0.01, 
+                value=1.0,
+                step=0.1
+            )
+
 
         # Exponential PDF
         x = np.linspace(
@@ -268,7 +299,7 @@ def main():
         # Exponential PDF line chart
         expon_pdf_chart = generate_altair_pdf(df)
         # Display in app
-        st.latex("PDF\\ of\\ Exp"+f"({l})")
+        st.latex("PDF\\ of\\ Exp"+f"({np.round(l, 2)})")
         st.altair_chart(
             expon_pdf_chart, 
             use_container_width=True
