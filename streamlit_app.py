@@ -238,10 +238,23 @@ def main():
             beta.ppf(0.999, a, b), 
             1000
         )
-        df = pd.DataFrame({
-            'x': x, 
-            'f(x)': beta.pdf(x, a, b)
-        })
+
+        # Log option
+        logpdf = st.sidebar.checkbox(
+            label='logpdf (useful for small values of \u03B1, \u03B2)'
+        )
+        
+        if logpdf:
+            df = pd.DataFrame({
+                'x': x, 
+                'f(x)': beta.logpdf(x, a, b)
+            })
+        else:
+            df = pd.DataFrame({
+                'x': x, 
+                'f(x)': beta.pdf(x, a, b)
+            })
+        
         # Beta PDF line chart
         beta_pdf_chart = generate_altair_pdf(df)
         # Display in app
