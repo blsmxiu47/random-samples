@@ -245,15 +245,14 @@ def main():
         )
         
         if logpdf:
-            df = pd.DataFrame({
-                'x': x, 
-                'f(x)': beta.logpdf(x, a, b)
-            })
+            fx = beta.logpdf(x, a, b)
         else:
-            df = pd.DataFrame({
+            fx = beta.pdf(x, a, b)
+            
+        df = pd.DataFrame({
                 'x': x, 
-                'f(x)': beta.pdf(x, a, b)
-            })
+                'f(x)': fx
+        })
         
         # Beta PDF line chart
         beta_pdf_chart = generate_altair_pdf(df)
