@@ -297,7 +297,6 @@ def main():
                 step=0.1
             )
 
-
         # Exponential PDF
         x = np.linspace(
             expon.ppf(0.001, scale=1/l), 
