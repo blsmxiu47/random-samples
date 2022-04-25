@@ -1,12 +1,12 @@
 import altair as alt
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, beta, expon
+from scipy.stats import norm, beta, binom, expon
 import streamlit as st
 
 
 def generate_altair_pdf(df):
-    """Builds and returns an pdf (probability density function) Altair line chart from a Pandas DataFrame
+    """Builds and returns a pdf (probability density function) Altair line chart from a Pandas DataFrame
      containing some array x and the array of values corresponding to the value of a given pdf, f(x), at each x"""
     pdf_line = (
         alt.Chart(df)
@@ -86,8 +86,40 @@ def generate_altair_pdf(df):
     return pdf_chart
 
 
+def generate_altair_pmf(df):
+    """Builds and returns a pmf (probability mass function) Altair dot chart from a Pandas DataFrame
+     containing some array x and the array of values corresponding to the value of a given pmf, p(x), at each x"""
+
+    base = alt.Chart(df)
+    
+    points = (
+        base
+        .mark_point()
+        .encode(
+            x='x',
+            y='p(x)'
+        )
+    )
+
+    vlines = (
+        base
+        .mark_rule()
+        .encode(
+            x='x',
+            y='p(x)'
+        )
+    )
+
+    pmf_chart = alt.layer(
+        points,
+        vlines
+    )
+
+    return pmf_chart
+
+
 def generate_altair_sample_hist(sample):
-    """Builds and returns and Altair histogram chart from a Pandas DataFrame"""
+    """Builds and returns an Altair histogram chart from a Pandas DataFrame"""
     base = alt.Chart(sample)
 
     max_bins = st.slider('Max histogram bins', 5, 40, 40)
@@ -123,7 +155,7 @@ def main():
     st.sidebar.subheader("Distribution")
     distribution = st.sidebar.selectbox(
         label='Select distribution', 
-        options=('Gaussian', 'Beta', 'Exponential')
+        options=('Gaussian', 'Beta', 'Binomial', 'Exponential')
     )
 
     # Sample Size Selection
@@ -266,6 +298,72 @@ def main():
         # Random sample
         sample = pd.DataFrame(
             beta.rvs(a, b, size=sample_size), 
+            columns=['vals']
+        )
+        # Sample histogram
+        sample_hist = generate_altair_sample_hist(sample)
+        # Display in app
+        st.altair_chart(
+            sample_hist, 
+            use_container_width=True
+        )
+    
+    elif distribution == "Binomial":
+        # Binomial parameters
+        input_type = st.sidebar.radio(
+            'Input Type',
+            ('Sliders', 'Enter Values')
+        )
+        if input_type == 'Sliders':
+            n = st.sidebar.slider(
+                label='n', 
+                min_value=1, 
+                max_value=100, 
+                value=20
+            )
+            p = st.sidebar.slider(
+                label='p', 
+                min_value=0.00, 
+                max_value=1.00, 
+                value=0.50
+            )
+        elif input_type == 'Enter Values':
+            n = st.sidebar.number_input(
+                label='n', 
+                min_value=1,  
+                value=20,
+                step=1
+            )
+            p = st.sidebar.number_input(
+                label='p', 
+                min_value=0.00,
+                max_value=1.0,
+                value=0.50,
+                step=0.01
+            )
+
+        # Binomial PMF
+        x = np.arange(
+            binom.ppf(0.001, n, p), 
+            binom.ppf(0.999, n, p)
+        )
+        df = pd.DataFrame({
+                'x': x, 
+                'p(x)': binom.pmf(x, n, p)
+        })
+        
+        # Binomial PMF chart
+        binomial_pmf_chart = generate_altair_pmf(df)
+        # Display in app
+        st.latex('PMF\\ of\\ \mathcal{Binom}'+f'({n}, {np.round(p, 2)})')
+        st.altair_chart(
+            binomial_pmf_chart, 
+            use_container_width=True
+        )
+
+        # Random sample
+        sample = pd.DataFrame(
+            binom.rvs(n, p, size=sample_size), 
             columns=['vals']
         )
         # Sample histogram
