@@ -97,7 +97,9 @@ def generate_altair_pmf(df):
         .mark_point()
         .encode(
             x='x',
-            y='p(x)'
+            y='p(x)',
+            size=alt.value(90),
+            fill=alt.value('#4682b4')
         )
     )
 
@@ -106,7 +108,9 @@ def generate_altair_pmf(df):
         .mark_rule()
         .encode(
             x='x',
-            y='p(x)'
+            y='p(x)',
+            color=alt.value('white'),
+            strokeWidth=alt.value(2)
         )
     )
 
@@ -345,7 +349,7 @@ def main():
         # Binomial PMF
         x = np.arange(
             binom.ppf(0.001, n, p), 
-            binom.ppf(0.999, n, p)
+            binom.ppf(0.999, n, p) + 1
         )
         df = pd.DataFrame({
                 'x': x, 
