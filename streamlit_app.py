@@ -99,7 +99,8 @@ def generate_altair_pmf(df):
             x='x',
             y='p(x)',
             size=alt.value(90),
-            fill=alt.value('#4682b4')
+            fill=alt.value('#4682b4'),
+            tooltip=['p(x)']
         )
     )
 
