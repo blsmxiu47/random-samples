@@ -467,7 +467,7 @@ def main():
             ) 
         
         try:
-            # Exponential PDF
+            # Uniform PDF
             x = np.linspace(
                 uniform.ppf(0.001, loc=a, scale=b-a), 
                 uniform.ppf(0.999, loc=a, scale=b-a), 
@@ -477,7 +477,7 @@ def main():
                 'x': x, 
                 'f(x)': uniform.pdf(x, loc=a, scale=b-a)
             })
-            # Exponential PDF line chart
+            # Uniform PDF line chart
             uniform_pdf_chart = generate_altair_pdf(df)
             # Display in app
             st.latex(f'PDF\\ of\\ U([{a}, {b}]))')
