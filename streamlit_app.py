@@ -1,7 +1,7 @@
 import altair as alt
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, beta, binom, expon
+from scipy.stats import norm, beta, binom, expon, uniform
 import streamlit as st
 
 
@@ -160,7 +160,7 @@ def main():
     st.sidebar.subheader("Distribution")
     distribution = st.sidebar.selectbox(
         label='Select distribution', 
-        options=('Gaussian', 'Beta', 'Binomial', 'Exponential')
+        options=('Gaussian', 'Beta', 'Binomial', 'Exponential', 'Uniform (continuous)')
     )
 
     # Sample Size Selection
@@ -432,6 +432,74 @@ def main():
             use_container_width=True
         )
 
+    elif distribution == "Uniform (continuous)":
+        # Uniform parameters
+        a = 0
+        b = 1
+        input_type = st.sidebar.radio(
+            'Input Type',
+            ('Sliders', 'Enter Values')
+        )
+        if input_type == 'Sliders':
+            a = st.sidebar.slider(
+                label='a', 
+                min_value=0, 
+                max_value=9, 
+                value=0
+            )
+            b = st.sidebar.slider(
+                label='b', 
+                min_value=1, 
+                max_value=10, 
+                value=1
+            )
+        elif input_type == 'Enter Values':
+            a = st.sidebar.number_input(
+                label='a',
+                value=0,
+                step=1
+            )
+            b = st.sidebar.number_input(
+                label='b', 
+                value=1,
+                step=1
+            ) 
+        
+        try:
+            # Exponential PDF
+            x = np.linspace(
+                uniform.ppf(0.001, loc=a, scale=b-a), 
+                uniform.ppf(0.999, loc=a, scale=b-a), 
+                1000
+            )
+            df = pd.DataFrame({
+                'x': x, 
+                'f(x)': uniform.pdf(x, loc=a, scale=b-a)
+            })
+            # Exponential PDF line chart
+            uniform_pdf_chart = generate_altair_pdf(df)
+            # Display in app
+            st.latex(f'PDF\\ of\\ U([{a}, {b}]))')
+            st.altair_chart(
+                uniform_pdf_chart, 
+                use_container_width=True
+            )
+
+            # Random sample
+            sample = pd.DataFrame(
+                uniform.rvs(loc=a, scale=b-a, size=sample_size), 
+                columns=['vals']
+            )
+            # Sample histogram
+            sample_hist = generate_altair_sample_hist(sample)
+            # Display in app
+            st.altair_chart(
+                sample_hist, 
+                use_container_width=True
+            )
+        except ValueError:
+            # Notify user to select valid params
+            st.warning('Unable to draw random sample - Parameter "a" must be less than or equal to "b"')
 
 st.sidebar.title('Random Samples')
 st.sidebar.write('1. Pick a distribution')
