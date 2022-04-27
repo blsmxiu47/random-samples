@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.stats import norm, beta, binom, expon, uniform
 import streamlit as st
 
+X_INTERVAL = 1000
 
 def generate_altair_pdf(df):
     """Builds and returns a pdf (probability density function) Altair line chart from a Pandas DataFrame
@@ -208,7 +209,7 @@ def main():
         x = np.linspace(
             norm.ppf(0.001, mu, sigma_squared), 
             norm.ppf(0.999, mu, sigma_squared),
-            1000
+            X_INTERVAL
         )
         df = pd.DataFrame({
             'x': x, 
@@ -273,7 +274,7 @@ def main():
         x = np.linspace(
             beta.ppf(0.001, a, b), 
             beta.ppf(0.999, a, b), 
-            1000
+            X_INTERVAL
         )
 
         # Log option
@@ -404,7 +405,7 @@ def main():
         x = np.linspace(
             expon.ppf(0.001, scale=1/l), 
             expon.ppf(0.999, scale=1/l), 
-            1000
+            X_INTERVAL
         )
         df = pd.DataFrame({
             'x': x, 
@@ -470,7 +471,7 @@ def main():
             x = np.linspace(
                 uniform.ppf(0.001, loc=a, scale=b-a), 
                 uniform.ppf(0.999, loc=a, scale=b-a), 
-                1000
+                X_INTERVAL
             )
             df = pd.DataFrame({
                 'x': x, 
